@@ -13,7 +13,8 @@
          * @return array|bool
          */
         public function getReviewsByMovieId($movieId) {
-            return $this->findBy('movie_id', $movieId);
+            $query = "SELECT * FROM {$this->table} WHERE movie_id = ? ORDER BY created_at DESC";
+            return $this->query($query, [$movieId]);
         }
         
         /**
@@ -38,28 +39,45 @@
                 ];
             }
             
-            // Sanitize data
-            $movieId = htmlspecialchars($data['movie_id']);
-            $username = htmlspecialchars($data['username']);
-            $rating = (int)$data['rating'];
-            $comment = htmlspecialchars($data['comment']);
-            $createdAt = date('Y-m-d H:i:s');
-            
-            // Insert review
-            $query = "INSERT INTO {$this->table} (movie_id, username, rating, comment, created_at) 
-                    VALUES (?, ?, ?, ?, ?)";
-            
-            $result = $this->execute($query, [$movieId, $username, $rating, $comment, $createdAt]);
-            
-            if($result) {
-                return [
-                    'status' => 'success',
-                    'message' => 'Review added successfully'
-                ];
-            } else {
+            try {
+                // Sanitize data
+                $movieId = filter_var($data['movie_id'], FILTER_SANITIZE_NUMBER_INT);
+                $username = htmlspecialchars($data['username']);
+                $rating = (int)$data['rating'];
+                $comment = htmlspecialchars($data['comment']);
+                $createdAt = date('Y-m-d H:i:s');
+                
+                // Connect directly to database for better error handling
+                $db = $this->connect();
+                
+                // Insert review
+                $query = "INSERT INTO {$this->table} (movie_id, username, rating, comment, created_at) 
+                        VALUES (?, ?, ?, ?, ?)";
+                
+                $stmt = $db->prepare($query);
+                $result = $stmt->execute([$movieId, $username, $rating, $comment, $createdAt]);
+                
+                if($result) {
+                    return [
+                        'status' => 'success',
+                        'message' => 'Review added successfully'
+                    ];
+                } else {
+                    return [
+                        'status' => 'error',
+                        'message' => 'Database error: Failed to insert review'
+                    ];
+                }
+            } catch (\PDOException $e) {
+                // Return detailed error for debugging
                 return [
                     'status' => 'error',
-                    'message' => 'Failed to add review'
+                    'message' => 'Database error: ' . $e->getMessage()
+                ];
+            } catch (\Exception $e) {
+                return [
+                    'status' => 'error',
+                    'message' => 'Error: ' . $e->getMessage()
                 ];
             }
         }

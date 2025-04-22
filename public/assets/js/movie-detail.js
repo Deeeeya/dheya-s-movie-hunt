@@ -128,29 +128,41 @@ function displayReviews(reviews) {
 
 // Submit a new review
 async function submitReview(movieId) {
-  const username = document.getElementById("username").value.trim();
-  const rating = document.getElementById("rating").value;
-  const comment = document.getElementById("comment").value.trim();
-  const formErrors = document.getElementById("form-errors");
-
-  // Clear previous error messages
-  formErrors.textContent = "";
-
-  // Client-side validation
-  if (!username || !comment) {
-    formErrors.textContent = "Please fill out all fields";
-    return;
-  }
-
-  // Prepare review data
-  const reviewData = {
-    movie_id: movieId,
-    username: username,
-    rating: parseInt(rating),
-    comment: comment,
-  };
-
   try {
+    const username = document.getElementById("username").value.trim();
+    const rating = document.getElementById("rating").value;
+    const comment = document.getElementById("comment").value.trim();
+    const formErrors = document.getElementById("form-errors");
+
+    // Clear previous error messages
+    formErrors.textContent = "";
+    formErrors.style.color = "#e74c3c";
+
+    // Client-side validation
+    if (!username || !comment) {
+      formErrors.textContent = "Please fill out all fields";
+      return;
+    }
+
+    console.log("Submitting review:", {
+      movie_id: movieId,
+      username,
+      rating,
+      comment,
+    });
+
+    // Prepare review data
+    const reviewData = {
+      movie_id: movieId,
+      username: username,
+      rating: parseInt(rating),
+      comment: comment,
+    };
+
+    // Show loading state
+    formErrors.textContent = "Submitting review...";
+    formErrors.style.color = "blue";
+
     const response = await fetch("/api/reviews", {
       method: "POST",
       headers: {
@@ -159,14 +171,16 @@ async function submitReview(movieId) {
       body: JSON.stringify(reviewData),
     });
 
+    console.log("Response status:", response.status);
     const result = await response.json();
+    console.log("Response data:", result);
 
     if (result.status === "success") {
       // Clear form
       document.getElementById("review-form").reset();
 
       // Show success message
-      formErrors.textContent = "Review added successfully!";
+      formErrors.textContent = result.message || "Review added successfully!";
       formErrors.style.color = "green";
 
       // Refresh reviews
@@ -175,13 +189,16 @@ async function submitReview(movieId) {
       // Clear success message after 3 seconds
       setTimeout(() => {
         formErrors.textContent = "";
-        formErrors.style.color = "#e74c3c";
       }, 3000);
     } else {
       formErrors.textContent = result.message || "Error submitting review";
+      formErrors.style.color = "#e74c3c";
     }
   } catch (error) {
     console.error("Error submitting review:", error);
-    formErrors.textContent = "Error submitting review. Please try again.";
+    const formErrors = document.getElementById("form-errors");
+    formErrors.textContent =
+      "Network error submitting review. Please try again.";
+    formErrors.style.color = "#e74c3c";
   }
 }

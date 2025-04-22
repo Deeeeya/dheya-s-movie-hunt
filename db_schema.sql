@@ -1,10 +1,7 @@
--- Create database if it doesn't exist
 CREATE DATABASE IF NOT EXISTS movie_watchlist;
 
--- Use the database
 USE movie_watchlist;
 
--- Create movies table for local caching
 CREATE TABLE IF NOT EXISTS movies (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tmdb_id INT NOT NULL UNIQUE,
@@ -16,7 +13,6 @@ CREATE TABLE IF NOT EXISTS movies (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Create reviews table
 CREATE TABLE IF NOT EXISTS reviews (
     id INT AUTO_INCREMENT PRIMARY KEY,
     movie_id INT NOT NULL,
@@ -26,13 +22,11 @@ CREATE TABLE IF NOT EXISTS reviews (
     created_at DATETIME NOT NULL
 );
 
--- Insert sample movies data
 INSERT INTO movies (tmdb_id, title, overview, release_date, poster_path) VALUES
 (550, 'Fight Club', 'A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy.', '1999-10-15', '/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg'),
 (299536, 'Avengers: Infinity War', 'As the Avengers and their allies have continued to protect the world from threats too large for any one hero to handle, a new danger has emerged from the cosmic shadows: Thanos.', '2018-04-25', '/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg'),
 (278, 'The Shawshank Redemption', 'Framed in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison.', '1994-09-23', '/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg');
 
--- Insert sample reviews data
 INSERT INTO reviews (movie_id, username, rating, comment, created_at) VALUES
 (550, 'MovieFan1', 5, 'Fight Club is a masterpiece! The twist ending blew my mind.', '2025-04-15 10:30:00'),
 (550, 'CinemaLover', 4, 'Great performances and direction. A bit too violent for my taste but still a classic.', '2025-04-16 15:45:00'),

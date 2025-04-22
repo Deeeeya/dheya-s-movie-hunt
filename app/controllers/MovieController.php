@@ -24,7 +24,7 @@
                 return;
             }
             
-            $movieId = htmlspecialchars($_GET['movie_id']);
+            $movieId = filter_var($_GET['movie_id'], FILTER_SANITIZE_NUMBER_INT);
             
             // Use the Review model to get reviews
             $reviewModel = new Review();
@@ -41,9 +41,16 @@
         }
         
         public function addReview() {
+            // Enable error reporting for debugging
+            error_reporting(E_ALL);
+            ini_set('display_errors', 1);
+            
             // Get POST data as JSON
             $json = file_get_contents('php://input');
             $data = json_decode($json, true);
+            
+            // Debug - log received data
+            error_log("Received review data: " . print_r($data, true));
             
             if(!$data) {
                 $this->json([
@@ -54,10 +61,23 @@
             }
             
             // Use the Review model to add a review
-            $reviewModel = new Review();
-            $result = $reviewModel->addReview($data);
-            
-            $this->json($result);
+            try {
+                $reviewModel = new Review();
+                $result = $reviewModel->addReview($data);
+                
+                // Debug - log result
+                error_log("Review addition result: " . print_r($result, true));
+                
+                $this->json($result);
+            } catch (\Exception $e) {
+                // Log exception
+                error_log("Exception adding review: " . $e->getMessage());
+                
+                $this->json([
+                    'status' => 'error',
+                    'message' => 'Server error: ' . $e->getMessage()
+                ]);
+            }
         }
     }
 
