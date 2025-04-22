@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+$(document).ready(function () {
   // Get movie ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   const movieId = urlParams.get("id");
@@ -11,8 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchReviews(movieId);
 
     // Set up review form submission
-    const reviewForm = document.getElementById("review-form");
-    reviewForm.addEventListener("submit", (e) => {
+    $("#review-form").submit(function (e) {
       e.preventDefault();
       submitReview(movieId);
     });
@@ -23,31 +22,34 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Fetch movie details from our backend API which handles the TMDB API call
-async function fetchMovieDetails(movieId) {
-  try {
-    const response = await fetch(`/api/movie?id=${movieId}`);
-    const movie = await response.json();
-
-    if (movie.id) {
-      displayMovieDetails(movie);
-    } else {
+function fetchMovieDetails(movieId) {
+  $.ajax({
+    url: "/api/movie",
+    method: "GET",
+    data: { id: movieId },
+    dataType: "json",
+    success: function (movie) {
+      if (movie.id) {
+        displayMovieDetails(movie);
+      } else {
+        displayError("Could not load movie details. Please try again later.");
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error fetching movie details:", error);
       displayError("Could not load movie details. Please try again later.");
-    }
-  } catch (error) {
-    console.error("Error fetching movie details:", error);
-    displayError("Could not load movie details. Please try again later.");
-  }
+    },
+  });
 }
 
 // Display error message
 function displayError(message) {
-  const movieDetailsSection = document.getElementById("movie-details");
-  movieDetailsSection.innerHTML = `<p class="error-message">${message}</p>`;
+  $("#movie-details").html(`<p class="error-message">${message}</p>`);
 }
 
 // Display movie details
 function displayMovieDetails(movie) {
-  const movieDetailsSection = document.getElementById("movie-details");
+  const movieDetailsSection = $("#movie-details");
 
   const posterPath = movie.poster_path
     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
@@ -60,7 +62,7 @@ function displayMovieDetails(movie) {
   // Update page title
   document.title = `${movie.title} - Movie Watchlist`;
 
-  movieDetailsSection.innerHTML = `
+  movieDetailsSection.html(`
         <img src="${posterPath}" alt="${movie.title}" class="movie-poster">
         <div class="movie-details-info">
             <h1 class="movie-details-title">${movie.title}</h1>
@@ -77,41 +79,47 @@ function displayMovieDetails(movie) {
             </p>
             <p class="movie-overview">${movie.overview}</p>
         </div>
-    `;
+    `);
 }
 
 // Fetch reviews for a movie from our backend
-async function fetchReviews(movieId) {
-  try {
-    const response = await fetch(`/api/reviews?movie_id=${movieId}`);
-    const result = await response.json();
+function fetchReviews(movieId) {
+  $.ajax({
+    url: "/api/reviews",
+    method: "GET",
+    data: { movie_id: movieId },
+    dataType: "json",
+    success: function (result) {
+      const reviewsContainer = $("#reviews-container");
 
-    const reviewsContainer = document.getElementById("reviews-container");
-
-    if (result.status === "success" && result.data && result.data.length > 0) {
-      displayReviews(result.data);
-    } else {
-      reviewsContainer.innerHTML =
-        "<p>No reviews yet. Be the first to review!</p>";
-    }
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-    const reviewsContainer = document.getElementById("reviews-container");
-    reviewsContainer.innerHTML =
-      "<p>Could not load reviews. Please try again later.</p>";
-  }
+      if (
+        result.status === "success" &&
+        result.data &&
+        result.data.length > 0
+      ) {
+        displayReviews(result.data);
+      } else {
+        reviewsContainer.html("<p>No reviews yet. Be the first to review!</p>");
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error fetching reviews:", error);
+      $("#reviews-container").html(
+        "<p>Could not load reviews. Please try again later.</p>"
+      );
+    },
+  });
 }
 
 // Display reviews
 function displayReviews(reviews) {
-  const reviewsContainer = document.getElementById("reviews-container");
-  reviewsContainer.innerHTML = "";
+  const reviewsContainer = $("#reviews-container");
+  reviewsContainer.empty();
 
-  reviews.forEach((review) => {
+  $.each(reviews, function (index, review) {
     const stars = "⭐".repeat(review.rating);
-    const reviewElement = document.createElement("div");
-    reviewElement.className = "review";
-    reviewElement.innerHTML = `
+    const reviewElement = $("<div>").addClass("review");
+    reviewElement.html(`
             <div class="review-header">
                 <span class="review-username">${review.username}</span>
                 <span class="review-rating">${stars}</span>
@@ -120,85 +128,81 @@ function displayReviews(reviews) {
             <p class="review-date">${new Date(
               review.created_at
             ).toLocaleDateString()}</p>
-        `;
+        `);
 
-    reviewsContainer.appendChild(reviewElement);
+    reviewsContainer.append(reviewElement);
   });
 }
 
 // Submit a new review
-async function submitReview(movieId) {
-  try {
-    const username = document.getElementById("username").value.trim();
-    const rating = document.getElementById("rating").value;
-    const comment = document.getElementById("comment").value.trim();
-    const formErrors = document.getElementById("form-errors");
+function submitReview(movieId) {
+  const username = $("#username").val().trim();
+  const rating = $("#rating").val();
+  const comment = $("#comment").val().trim();
+  const formErrors = $("#form-errors");
 
-    // Clear previous error messages
-    formErrors.textContent = "";
-    formErrors.style.color = "#e74c3c";
+  // Clear previous error messages
+  formErrors.text("");
+  formErrors.css("color", "#e74c3c");
 
-    // Client-side validation
-    if (!username || !comment) {
-      formErrors.textContent = "Please fill out all fields";
-      return;
-    }
-
-    console.log("Submitting review:", {
-      movie_id: movieId,
-      username,
-      rating,
-      comment,
-    });
-
-    // Prepare review data
-    const reviewData = {
-      movie_id: movieId,
-      username: username,
-      rating: parseInt(rating),
-      comment: comment,
-    };
-
-    // Show loading state
-    formErrors.textContent = "Submitting review...";
-    formErrors.style.color = "blue";
-
-    const response = await fetch("/api/reviews", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reviewData),
-    });
-
-    console.log("Response status:", response.status);
-    const result = await response.json();
-    console.log("Response data:", result);
-
-    if (result.status === "success") {
-      // Clear form
-      document.getElementById("review-form").reset();
-
-      // Show success message
-      formErrors.textContent = result.message || "Review added successfully!";
-      formErrors.style.color = "green";
-
-      // Refresh reviews
-      fetchReviews(movieId);
-
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        formErrors.textContent = "";
-      }, 3000);
-    } else {
-      formErrors.textContent = result.message || "Error submitting review";
-      formErrors.style.color = "#e74c3c";
-    }
-  } catch (error) {
-    console.error("Error submitting review:", error);
-    const formErrors = document.getElementById("form-errors");
-    formErrors.textContent =
-      "Network error submitting review. Please try again.";
-    formErrors.style.color = "#e74c3c";
+  // Client-side validation
+  if (!username || !comment) {
+    formErrors.text("Please fill out all fields");
+    return;
   }
+
+  console.log("Submitting review:", {
+    movie_id: movieId,
+    username,
+    rating,
+    comment,
+  });
+
+  // Prepare review data
+  const reviewData = {
+    movie_id: movieId,
+    username: username,
+    rating: parseInt(rating),
+    comment: comment,
+  };
+
+  // Show loading state
+  formErrors.text("Submitting review...");
+  formErrors.css("color", "blue");
+
+  $.ajax({
+    url: "/api/reviews",
+    method: "POST",
+    contentType: "application/json",
+    data: JSON.stringify(reviewData),
+    dataType: "json",
+    success: function (result) {
+      console.log("Response data:", result);
+
+      if (result.status === "success") {
+        // Clear form
+        $("#review-form")[0].reset();
+
+        // Show success message
+        formErrors.text(result.message || "Review added successfully!");
+        formErrors.css("color", "green");
+
+        // Refresh reviews
+        fetchReviews(movieId);
+
+        // Clear success message after 3 seconds
+        setTimeout(function () {
+          formErrors.text("");
+        }, 3000);
+      } else {
+        formErrors.text(result.message || "Error submitting review");
+        formErrors.css("color", "#e74c3c");
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error submitting review:", error);
+      formErrors.text("Network error submitting review. Please try again.");
+      formErrors.css("color", "#e74c3c");
+    },
+  });
 }
