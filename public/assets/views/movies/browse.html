@@ -1,12 +1,41 @@
-<html>
-    <head>
-        <!-- remember to route relative to index.php  -->
-        <script type="text/javascript" src="./assets/js/homepage.js"></script>
-        <link rel="stylesheet" href="./assets/styles/homepage.css">
-    </head>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Watchlist</title>
+    <link rel="stylesheet" href="assets/styles/movies.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Movie Watchlist</h1>
+      <nav>
+        <ul>
+          <li><a href="/movies" class="active">Browse Movies</a></li>
+        </ul>
+      </nav>
+    </header>
 
-    <body>
-        <p>homepage!</p>
-    </body>
+    <main>
+      <section class="search-section">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search for movies..."
+        />
+        <button id="search-button">Search</button>
+      </section>
+
+      <section class="movies-container">
+        <h2>Popular Movies</h2>
+        <div id="movies-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 Movie Watchlist</p>
+    </footer>
+
+    <script src="assets/js/movies.js"></script>
+  </body>
 </html>
-

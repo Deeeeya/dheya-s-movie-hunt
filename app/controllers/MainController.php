@@ -1,17 +1,19 @@
 <?php
 
-namespace app\controllers;
+    namespace app\controllers;
 
-//this is an example controller class, feel free to delete
-class MainController extends Controller {
-
-    public function homepage() {
-        //remember to route relative to index.php
-        //require page and exit to return an HTML page
-        $this->returnView('./assets/views/main/homepage.html');
+    class MainController extends Controller {
+        
+        public function index() {
+            // Redirect to movies page
+            header('Location: /movies');
+            exit();
+        }
+        
+        public function notFound() {
+            echo "404 - Page not found";
+            exit();
+        }
     }
 
-    public function notFound() {
-    }
-
-}
+?>

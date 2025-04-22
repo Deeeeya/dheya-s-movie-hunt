@@ -1,18 +1,50 @@
 <?php
 
-//require our files, remember should be relative to index.php
-require '../app/core/Router.php';
-require '../app/models/Model.php';
-require '../app/controllers/Controller.php';
-require '../app/controllers/MainController.php';
-require '../app/controllers/UserController.php';
-require '../app/models/User.php';
+    // Enable error reporting for debugging
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
 
+    // Define paths
+    define('ROOT_PATH', dirname(__DIR__, 2));
+    define('APP_PATH', ROOT_PATH . '/app');
+    define('CONTROLLER_PATH', APP_PATH . '/controllers');
+    define('MODEL_PATH', APP_PATH . '/models');
+    define('PUBLIC_PATH', ROOT_PATH . '/public');
 
-//set up env variables
-$env = parse_ini_file('../.env');
+    // Autoload classes
+    spl_autoload_register(function($className) {
+        // Convert namespace to file path
+        $className = str_replace('\\', '/', $className);
+        $filePath = ROOT_PATH . '/' . $className . '.php';
+        
+        if (file_exists($filePath)) {
+            require_once $filePath;
+        }
+    });
 
-define('DBNAME', $env['DBNAME']);
-define('DBHOST', $env['DBHOST']);
-define('DBUSER', $env['DBUSER']);
-define('DBPASS', $env['DBPASS']);
+    // Load environment variables
+    $envFile = ROOT_PATH . '/.env';
+    if (file_exists($envFile)) {
+        $env = parse_ini_file($envFile);
+        
+        // Define database constants
+        define('DBHOST', $env['DBHOST'] ?? 'localhost');
+        define('DBNAME', $env['DBNAME'] ?? 'movie_watchlist');
+        define('DBUSER', $env['DBUSER'] ?? 'root');
+        define('DBPASS', $env['DBPASS'] ?? '');
+        define('TMDB_API_KEY', $env['TMDB_API_KEY'] ?? '');
+    } else {
+        die('.env file not found');
+    }
+
+    // Load required files manually in case autoload fails
+    require_once CONTROLLER_PATH . '/Controller.php';
+    require_once CONTROLLER_PATH . '/MainController.php';
+    require_once CONTROLLER_PATH . '/MovieController.php';
+    require_once CONTROLLER_PATH . '/ApiController.php';
+    require_once MODEL_PATH . '/Model.php';
+    require_once MODEL_PATH . '/Movie.php';
+    require_once MODEL_PATH . '/Review.php';
+    require_once APP_PATH . '/Router.php';
+
+?>
