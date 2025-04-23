@@ -1,8 +1,6 @@
 $(document).ready(function () {
-  // Load popular movies when the page loads
   fetchPopularMovies();
 
-  // Set up search functionality
   $("#search-button").click(function () {
     const query = $("#search-input").val().trim();
     if (query) {
@@ -20,7 +18,6 @@ $(document).ready(function () {
   });
 });
 
-// Fetch popular movies from our backend API which handles the TMDB API call
 function fetchPopularMovies() {
   console.log("Fetching popular movies...");
 
@@ -48,7 +45,6 @@ function fetchPopularMovies() {
   });
 }
 
-// Search for movies using our backend API
 function searchMovies(query) {
   console.log(`Searching for movies with query: ${query}`);
 
@@ -77,13 +73,11 @@ function searchMovies(query) {
   });
 }
 
-// Display error message
 function displayError(message) {
   const moviesGrid = $("#movies-grid");
   moviesGrid.html(`<p class="error-message">${message}</p>`);
 }
 
-// Display movies in the grid
 function displayMovies(movies) {
   const moviesGrid = $("#movies-grid");
   moviesGrid.empty();

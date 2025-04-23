@@ -11,8 +11,7 @@
         private $routes = [];
         
         public function __construct() {
-            // Define routes
-            $this->routes = [
+            $this->routes = [ // routes are defined here
                 'GET' => [
                     '/' => [MainController::class, 'index'],
                     '/movies' => [MovieController::class, 'browse'],
@@ -26,23 +25,21 @@
                 ]
             ];
             
-            // Route the request
-            $this->route();
+            $this->route(); // routes the request
         }
         
         private function route() {
-            // Get request method and URI
-            $method = $_SERVER['REQUEST_METHOD'];
+            $method = $_SERVER['REQUEST_METHOD']; // Get request method and URI
             $uri = strtok($_SERVER['REQUEST_URI'], '?');
             
-            // Check if route exists
+            // checks if the route exists
             if(isset($this->routes[$method][$uri])) {
-                // Route found, execute controller method
+                // if the route is found, controller method is executed
                 list($controller, $action) = $this->routes[$method][$uri];
                 $controllerInstance = new $controller();
                 $controllerInstance->$action();
             } else {
-                // Route not found, default to movies page
+                // if the route is not found, it defaults to movies page
                 $controller = new MovieController();
                 $controller->browse();
             }

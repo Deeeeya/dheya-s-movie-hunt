@@ -5,7 +5,6 @@
     class MainController extends Controller {
         
         public function index() {
-            // Redirect to movies page
             header('Location: /movies');
             exit();
         }

@@ -7,21 +7,16 @@
         protected $table = 'movies';
         
         /**
-         * Save movie details to the database if not already saved
-         * This allows us to keep a local cache of movies for faster access
-         * 
          * @param array $movieData
          * @return int|bool
          */
         public function saveMovie($movieData) {
-            // Check if movie already exists
             $existingMovie = $this->findBy('tmdb_id', $movieData['id']);
             
             if($existingMovie) {
                 return $existingMovie[0]['id'];
             }
             
-            // Movie doesn't exist, insert it
             $title = htmlspecialchars($movieData['title']);
             $overview = htmlspecialchars($movieData['overview'] ?? '');
             $releaseDate = htmlspecialchars($movieData['release_date'] ?? null);
@@ -34,7 +29,6 @@
             $result = $this->execute($query, [$tmdbId, $title, $overview, $releaseDate, $posterPath]);
             
             if($result) {
-                // Get the inserted ID
                 $db = $this->connect();
                 return $db->lastInsertId();
             }
@@ -43,8 +37,6 @@
         }
         
         /**
-         * Get movie by TMDB ID
-         * 
          * @param int $tmdbId
          * @return array|bool
          */
@@ -53,8 +45,6 @@
         }
         
         /**
-         * Search for movies by title
-         * 
          * @param string $title
          * @return array|bool
          */
@@ -64,8 +54,6 @@
         }
         
         /**
-         * Get recently added or updated movies
-         * 
          * @param int $limit
          * @return array|bool
          */

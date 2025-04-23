@@ -29,7 +29,6 @@
                 $stmt->execute($params);
                 return $stmt->fetchAll(\PDO::FETCH_ASSOC);
             } catch (\PDOException $e) {
-                // Log error for debugging
                 error_log("Database query error: " . $e->getMessage());
                 return false;
             }
@@ -41,24 +40,20 @@
                 $stmt = $db->prepare($query);
                 return $stmt->execute($params);
             } catch (\PDOException $e) {
-                // Log error for debugging
                 error_log("Database execute error: " . $e->getMessage());
                 return false;
             }
         }
         
         protected function connect() {
-            // Get database credentials
             $db_host = DBHOST;
             $db_name = DBNAME;
             $db_user = DBUSER;
             $db_pass = DBPASS;
             
-            // Debug connection info (comment out in production)
             error_log("Connecting to database: {$db_name} on {$db_host} as {$db_user}");
             
             try {
-                // Create PDO connection with error handling
                 $options = [
                     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                     \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
@@ -70,11 +65,9 @@
                 
                 return $db;
             } catch (\PDOException $e) {
-                // Log the error with connection details (without password)
                 error_log("Database connection failed - Host: {$db_host}, User: {$db_user}, Database: {$db_name}");
                 error_log("PDO Error: " . $e->getMessage());
                 
-                // Rethrow with a cleaner message
                 throw new \PDOException("Database connection failed: " . $e->getMessage(), (int)$e->getCode());
             }
         }

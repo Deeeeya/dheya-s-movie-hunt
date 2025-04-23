@@ -8,26 +8,23 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   </head>
   <body>
-    <header>
-      <h1>Movie Watchlist</h1>
-      <nav>
+    <header class="mainHeader">
+      <h1>Movie Hunt</h1>
+      <nav class="navBar">
         <ul>
           <li><a href="/movies">Browse Movies</a></li>
         </ul>
       </nav>
     </header>
-
     <main>
       <section id="movie-details">
-        <!-- Movie details will be loaded here -->
+        <!-- movie details will be displayed here -->
       </section>
-
       <section id="reviews-section">
         <h2>Reviews</h2>
         <div id="reviews-container">
-          <!-- Reviews will be loaded here -->
+          <!-- reviews will be displayed here -->
         </div>
-
         <div class="review-form">
           <h3>Add Your Review</h3>
           <form id="review-form">
@@ -35,9 +32,8 @@
               <label for="username">Your Name:</label>
               <input type="text" id="username" name="username" required />
             </div>
-
             <div class="form-group">
-              <label for="rating">Rating (1-5):</label>
+              <label for="rating">Rating (1-5 Stars):</label>
               <select id="rating" name="rating" required>
                 <option value="1">⭐</option>
                 <option value="2">⭐⭐</option>
@@ -46,7 +42,6 @@
                 <option value="5">⭐⭐⭐⭐⭐</option>
               </select>
             </div>
-
             <div class="form-group">
               <label for="comment">Your Review:</label>
               <textarea
@@ -56,18 +51,15 @@
                 required
               ></textarea>
             </div>
-
             <button type="submit">Submit Review</button>
           </form>
           <div id="form-errors" class="error-message"></div>
         </div>
       </section>
     </main>
-
     <footer>
       <p>&copy; 2025 Movie Watchlist</p>
     </footer>
-
     <script src="assets/js/movie-detail.js"></script>
   </body>
 </html>

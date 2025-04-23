@@ -3,20 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Movie Watchlist</title>
+    <title>Movie Hunt</title>
     <link rel="stylesheet" href="assets/styles/movies.css" />
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   </head>
   <body>
-    <header>
-      <h1>Movie Watchlist</h1>
-      <nav>
+    <header class="mainHeader">
+      <h1>Movie Hunt</h1>
+      <nav class="navBar">
         <ul>
           <li><a href="/movies" class="active">Browse Movies</a></li>
         </ul>
       </nav>
     </header>
-
     <main>
       <section class="search-section">
         <input
@@ -26,17 +25,14 @@
         />
         <button id="search-button">Search</button>
       </section>
-
       <section class="movies-container">
         <h2>Popular Movies</h2>
         <div id="movies-grid"></div>
       </section>
     </main>
-
     <footer>
       <p>&copy; 2025 Movie Watchlist</p>
     </footer>
-
     <script src="assets/js/movies.js"></script>
   </body>
 </html>

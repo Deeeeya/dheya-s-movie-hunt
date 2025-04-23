@@ -1,27 +1,20 @@
 $(document).ready(function () {
-  // Get movie ID from URL
   const urlParams = new URLSearchParams(window.location.search);
   const movieId = urlParams.get("id");
 
   if (movieId) {
-    // Fetch movie details
     fetchMovieDetails(movieId);
-
-    // Fetch reviews for this movie
     fetchReviews(movieId);
 
-    // Set up review form submission
     $("#review-form").submit(function (e) {
       e.preventDefault();
       submitReview(movieId);
     });
   } else {
-    // Redirect to movies page if no ID is provided
     window.location.href = "/movies";
   }
 });
 
-// Fetch movie details from our backend API which handles the TMDB API call
 function fetchMovieDetails(movieId) {
   $.ajax({
     url: "/api/movie",
@@ -42,12 +35,10 @@ function fetchMovieDetails(movieId) {
   });
 }
 
-// Display error message
 function displayError(message) {
   $("#movie-details").html(`<p class="error-message">${message}</p>`);
 }
 
-// Display movie details
 function displayMovieDetails(movie) {
   const movieDetailsSection = $("#movie-details");
 
@@ -59,7 +50,6 @@ function displayMovieDetails(movie) {
     ? movie.release_date.split("-")[0]
     : "N/A";
 
-  // Update page title
   document.title = `${movie.title} - Movie Watchlist`;
 
   movieDetailsSection.html(`
@@ -82,7 +72,6 @@ function displayMovieDetails(movie) {
     `);
 }
 
-// Fetch reviews for a movie from our backend
 function fetchReviews(movieId) {
   $.ajax({
     url: "/api/reviews",
@@ -111,7 +100,6 @@ function fetchReviews(movieId) {
   });
 }
 
-// Display reviews
 function displayReviews(reviews) {
   const reviewsContainer = $("#reviews-container");
   reviewsContainer.empty();
@@ -134,18 +122,15 @@ function displayReviews(reviews) {
   });
 }
 
-// Submit a new review
 function submitReview(movieId) {
   const username = $("#username").val().trim();
   const rating = $("#rating").val();
   const comment = $("#comment").val().trim();
   const formErrors = $("#form-errors");
 
-  // Clear previous error messages
   formErrors.text("");
   formErrors.css("color", "#e74c3c");
 
-  // Client-side validation
   if (!username || !comment) {
     formErrors.text("Please fill out all fields");
     return;
@@ -158,7 +143,6 @@ function submitReview(movieId) {
     comment,
   });
 
-  // Prepare review data
   const reviewData = {
     movie_id: movieId,
     username: username,
@@ -166,7 +150,6 @@ function submitReview(movieId) {
     comment: comment,
   };
 
-  // Show loading state
   formErrors.text("Submitting review...");
   formErrors.css("color", "blue");
 
@@ -180,17 +163,13 @@ function submitReview(movieId) {
       console.log("Response data:", result);
 
       if (result.status === "success") {
-        // Clear form
         $("#review-form")[0].reset();
 
-        // Show success message
         formErrors.text(result.message || "Review added successfully!");
         formErrors.css("color", "green");
 
-        // Refresh reviews
         fetchReviews(movieId);
 
-        // Clear success message after 3 seconds
         setTimeout(function () {
           formErrors.text("");
         }, 3000);
