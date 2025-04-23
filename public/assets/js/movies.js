@@ -32,7 +32,7 @@ function fetchPopularMovies() {
         console.log(`Displaying ${data.results.length} movies`);
         displayMovies(data.results);
       } else {
-        console.error("No movie results found in data:", data);
+        console.error("No movie found in data:", data);
         displayError("No movies found. Please try again later.");
       }
     },
@@ -46,8 +46,6 @@ function fetchPopularMovies() {
 }
 
 function searchMovies(query) {
-  console.log(`Searching for movies with query: ${query}`);
-
   $.ajax({
     url: "/api/movies",
     method: "GET",
