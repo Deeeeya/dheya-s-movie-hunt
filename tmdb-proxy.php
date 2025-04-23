@@ -1,8 +1,5 @@
 <?php
 
-    // A simplified proxy for TMDB API that works with JWT tokens
-    // Place this file in your /public directory
-
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 

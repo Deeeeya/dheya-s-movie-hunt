@@ -7,7 +7,6 @@
         protected $table = 'reviews';
         
         /**
-
          * @param int $movieId
          * @return array|bool
          */

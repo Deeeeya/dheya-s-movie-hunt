@@ -14,11 +14,22 @@ body {
   background-position: center;
 }
 
-/* Header */
 .mainHeader {
   color: white;
   padding: 1rem;
   text-align: center;
+}
+
+.movie-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.movie-header img {
+  width: 30px;
+  height: 30px;
 }
 
 .navBar ul {
@@ -41,10 +52,9 @@ body {
 
 .navBar ul li a:hover,
 .navBar ul li a.active {
-  background-color: #34495e;
+  background-color: #800000;
 }
 
-/* Main Layout */
 main {
   max-width: 1200px;
   margin: 2rem auto;
@@ -58,6 +68,7 @@ main {
 
 .subTitle {
   color: white;
+  margin-bottom: 2rem;
 }
 
 #search-input {
@@ -70,7 +81,7 @@ main {
 
 #search-button {
   padding: 0.75rem 1.5rem;
-  background-color: #3498db;
+  background-color: #800000;
   color: white;
   border: none;
   border-radius: 0 4px 4px 0;
@@ -79,10 +90,9 @@ main {
 }
 
 #search-button:hover {
-  background-color: #2980b9;
+  background-color: #a24857;
 }
 
-/* Movies Grid */
 #movies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -91,10 +101,15 @@ main {
 
 .movie-card {
   background-color: white;
+  border: 2px solid #800000;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  transition: transform 0.5s ease;
+}
+
+.movie-card a {
+  text-decoration: none;
 }
 
 .movie-card:hover {
@@ -114,14 +129,14 @@ main {
 .movie-title {
   font-size: 1.2rem;
   margin-bottom: 0.5rem;
+  color: #800000;
 }
 
 .movie-year {
-  color: #7f8c8d;
+  color: #a24857;
   font-size: 0.9rem;
 }
 
-/* Movie Details Page */
 #movie-details {
   display: flex;
   margin-bottom: 2rem;
@@ -145,18 +160,19 @@ main {
 .movie-details-title {
   font-size: 2rem;
   margin-bottom: 1rem;
+  color: #800000;
 }
 
 .movie-details-meta {
-  color: #7f8c8d;
-  margin-bottom: 1.5rem;
+  color: #a24857;
+  margin-bottom: 2rem;
 }
 
 .movie-overview {
   line-height: 1.8;
+  color: #800000;
 }
 
-/* Reviews Section */
 #reviews-section {
   background-color: white;
   padding: 2rem;
@@ -167,6 +183,11 @@ main {
 .review {
   border-bottom: 1px solid #eee;
   padding: 1.5rem 0;
+}
+
+.leaveReview {
+  margin-bottom: 2rem;
+  font-size: 25px;
 }
 
 .review:last-child {
@@ -198,7 +219,6 @@ main {
   text-align: right;
 }
 
-/* Review Form */
 .review-form {
   margin-top: 2rem;
   padding-top: 2rem;
@@ -227,7 +247,7 @@ textarea {
 }
 
 button[type="submit"] {
-  background-color: #2ecc71;
+  background-color: #800000;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -237,7 +257,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-  background-color: #27ae60;
+  background-color: #a24857;
 }
 
 .error-message {
@@ -245,15 +265,13 @@ button[type="submit"]:hover {
   margin-top: 1rem;
 }
 
-/* Footer */
 footer {
   text-align: center;
   padding: 2rem;
-  background-color: #2c3e50;
+  background-color: transparent;
   color: white;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   #movie-details {
     flex-direction: column;

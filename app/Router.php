@@ -29,7 +29,7 @@
         }
         
         private function route() {
-            $method = $_SERVER['REQUEST_METHOD']; // Get request method and URI
+            $method = $_SERVER['REQUEST_METHOD']; 
             $uri = strtok($_SERVER['REQUEST_URI'], '?');
             
             // checks if the route exists
